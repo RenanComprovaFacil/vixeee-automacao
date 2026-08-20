@@ -193,3 +193,41 @@ wc -c ~/wf_live.json && grep -c '"type":' ~/wf_live.json
 > ⚠️ O arquivo exportado sai **com os tokens em texto puro**. Ao trazer para o PC,
 > salvar **fora** da pasta do repositório (o `.gitignore` cobre `wf_live.json`, mas
 > não conte apenas com isso).
+
+## B4 — Workflow vivo × versionado (comparado em 20/08/2026)
+
+Export feito de `vixeeepub01` na VM e comparado **estruturalmente** com
+`workflow/vixeee-publicador.json`. Nenhum valor de credencial foi impresso.
+
+| Aspecto | Resultado |
+|---|---|
+| Quantidade de nós | 23 = 23 ✅ |
+| Nomes dos nós | idênticos (nenhum exclusivo de nenhum lado) ✅ |
+| Conexões | **idênticas** ✅ |
+| Parâmetros dos outros 22 nós | idênticos ✅ |
+| Nó `Config` | difere **por construção** — o versionado usa `$env.*` |
+
+**Conclusão: a cópia versionada é fiel ao que está em produção.** O workflow foi
+atualizado 28 min depois do backup (`updatedAt` 2026-08-19T16:11:25Z), mas a mudança
+foi apenas a ativação — nenhuma alteração estrutural.
+
+### Cuidados ao reimportar (Bloco C)
+
+- **`active`**: o arquivo versionado tem `active: false`. Após `import:workflow`,
+  é obrigatório rodar `n8n update:workflow --id=vixeeepub01 --active=true`.
+- **Formato**: `n8n export:workflow` gera um **array** `[{...}]`; o arquivo versionado
+  é um objeto único. O `import:workflow` aceita os dois.
+
+### ⚠️ O export cru carrega mais que tokens
+
+Além de `igToken` e `tgToken` em texto puro, o export traz o campo **`shared`**, com
+**nome e e-mail pessoal** do dono da conta n8n. Um export nunca deve ser commitado,
+mesmo depois de remover os tokens.
+
+### Sujeira encontrada: nó fantasma no `staticData`
+
+O `staticData` guarda estado de um nó **`Agendamento 19h`** que não existe mais no
+workflow (resíduo de versão anterior, provavelmente do "MVP Afiliados"). Inofensivo,
+mas viaja junto em todo export. Limpeza opcional, sem pressa.
+
+`triggerCount` = 8 (7 gatilhos de agenda + 1 webhook) — coerente.

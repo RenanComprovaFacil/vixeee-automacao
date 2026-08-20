@@ -81,6 +81,8 @@ segredo em texto puro.
       risco de forma consciente e documentada
 - [ ] Auditar a conta Oracle: existe alguma instância A1? Foi afetada pelo corte de
       cota efetivo em 18/08 (4 OCPU/24 GB → 2 OCPU/12 GB)?
+      > **PENDENTE** — unico item do Bloco B ainda em aberto (e no console web
+      > da Oracle, nao por SSH). Ver `docs/BLOCO-B-DIAGNOSTICO.md`, secao B5.
 
 **Critério de aceite:** dá para clonar o repositório num PC zerado, entender o
 projeto inteiro e reconstruir o workflow — e nenhum token aparece em `git log -p`.
