@@ -24,7 +24,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 DIAS = {1: "segunda", 2: "terca", 3: "quarta", 4: "quinta",
         5: "sexta", 6: "sabado", 7: "domingo"}
 
-URL_ARTES = "https://raw.githubusercontent.com/RenanComprovaFacil/vixeee-artes/main"
+URL_ARTES = json.loads((RAIZ / "config.json").read_text(encoding="utf-8"))["base_artes"].rstrip("/")
 
 # campos publicados que precisam bater
 COMPARAR = ["image_url", "legenda_tg", "legenda_ig",

@@ -39,13 +39,10 @@ from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
 
-GH_USER = "RenanComprovaFacil"
-REPO_DADOS = "vixeee-automacao"
-REPO_ARTES = "vixeee-artes"
-BRANCH = "main"
-
-URL_SEMANA = f"https://raw.githubusercontent.com/{GH_USER}/{REPO_DADOS}/{BRANCH}/dados/semana.json"
-URL_ARTES = f"https://raw.githubusercontent.com/{GH_USER}/{REPO_ARTES}/{BRANCH}"
+# Enderecos vem do config.json — NUNCA escreva URL aqui dentro.
+_CFG = json.loads((RAIZ / "config.json").read_text(encoding="utf-8"))
+URL_SEMANA = _CFG["base_dados"].rstrip("/") + "/semana.json"
+URL_ARTES = _CFG["base_artes"].rstrip("/")
 
 # `produtos[$now.weekday - 1]` — o produto de hoje
 HOJE = "$json.produtos[$now.weekday - 1]"

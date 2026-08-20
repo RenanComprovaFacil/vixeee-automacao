@@ -1,0 +1,17 @@
+{
+  "_nota": "Fonte unica dos enderecos publicos do projeto. Trocar de hospedagem = editar SO este arquivo, regerar (site + workflow) e reimportar o workflow no n8n. Nenhum script deve ter URL escrita dentro.",
+
+  "base_publico": "https://renancomprovafacil.github.io/vixeee-automacao",
+  "base_artes":   "https://raw.githubusercontent.com/RenanComprovaFacil/vixeee-artes/main",
+  "base_dados":   "https://raw.githubusercontent.com/RenanComprovaFacil/vixeee-automacao/main/dados",
+
+  "instagram": "https://instagram.com/vixeeequebarato",
+  "telegram":  "https://t.me/vixeeequebarato",
+
+  "_migracao_cloudflare": {
+    "_nota": "Valores a usar quando a migracao for feita. base_artes e base_dados passam a sair do proprio site, o que permite o repositorio ser PRIVADO — nada publico aponta para conta nenhuma do GitHub.",
+    "base_publico": "https://SUBDOMINIO.pages.dev",
+    "base_artes":   "https://SUBDOMINIO.pages.dev/artes",
+    "base_dados":   "https://SUBDOMINIO.pages.dev/dados"
+  }
+}

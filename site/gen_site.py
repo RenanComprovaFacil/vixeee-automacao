@@ -28,9 +28,12 @@ RAIZ = Path(__file__).resolve().parent.parent
 # Paleta A — "Garimpo Quente" (docs/CONTEXTO.md)
 CORAL, ROSA, AMARELO, CREME, GRAFITE = "#FF5A5F", "#FF3E9A", "#FFC93C", "#FFF6EC", "#2B2B2B"
 
-ARTES = "https://raw.githubusercontent.com/RenanComprovaFacil/vixeee-artes/main"
-TELEGRAM = "https://t.me/vixeeequebarato"
-INSTAGRAM = "https://instagram.com/vixeeequebarato"
+# Enderecos vem do config.json — NUNCA escreva URL aqui dentro.
+# Trocar de hospedagem deve ser uma edicao em UM arquivo, nao uma cacada.
+_CFG = json.loads((RAIZ / "config.json").read_text(encoding="utf-8"))
+ARTES = _CFG["base_artes"]
+TELEGRAM = _CFG["telegram"]
+INSTAGRAM = _CFG["instagram"]
 
 DIAS = {1: "segunda", 2: "terça", 3: "quarta", 4: "quinta",
         5: "sexta", 6: "sábado", 7: "domingo"}
