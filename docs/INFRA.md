@@ -231,3 +231,49 @@ workflow (resíduo de versão anterior, provavelmente do "MVP Afiliados"). Inofe
 mas viaja junto em todo export. Limpeza opcional, sem pressa.
 
 `triggerCount` = 8 (7 gatilhos de agenda + 1 webhook) — coerente.
+
+---
+
+# Container recriado em 20/08/2026 — estado atual
+
+O container foi recriado para carregar as credenciais por variável de ambiente.
+**Este é o comando verdadeiro em uso agora:**
+
+```bash
+sudo docker run -d --name n8n --restart unless-stopped \
+  -p 127.0.0.1:5678:5678 \
+  -v /home/ubuntu/n8n/data:/home/node/.n8n \
+  --env-file /home/ubuntu/n8n.env \
+  docker.n8n.io/n8nio/n8n
+```
+
+`/home/ubuntu/n8n.env` (permissão `600`, **não versionado**) carrega:
+
+| Variável | Origem |
+|---|---|
+| `IG_USER_ID`, `IG_TOKEN` | `SEGREDOS.local.md` |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | `SEGREDOS.local.md` |
+| `GENERIC_TIMEZONE`, `TZ` | `America/Sao_Paulo` |
+| `N8N_SECURE_COOKIE` | `false` |
+| `N8N_BLOCK_ENV_ACCESS_IN_NODE` | `false` — **necessário** para o `$env` funcionar nos nós |
+
+## O que melhorou nessa recriação
+
+| Antes | Agora |
+|---|---|
+| porta em `0.0.0.0:5678` (exposta, protegida só pelo firewall da Oracle) | **`127.0.0.1:5678`** — inacessível de fora, dupla camada |
+| `TZ` indefinida (`date` mostrava UTC) | `TZ=America/Sao_Paulo` — relógio alinhado |
+| credenciais dentro do workflow | credenciais no `n8n.env`, workflow referencia `$env.*` |
+
+## Backup
+
+Antes da recriação: `/home/ubuntu/n8n-data-backup-20260820-1417.tar.gz` (177 KB).
+O banco fica num bind mount (`/home/ubuntu/n8n/data`), então remover o container
+não o apaga — mas o backup existe como rede de segurança.
+
+## Trocar as credenciais no futuro
+
+1. Editar `~/n8n.env` na VM
+2. `sudo docker restart n8n` e esperar ~90 s
+
+Não é preciso mexer no workflow — ele só referencia os nomes das variáveis.

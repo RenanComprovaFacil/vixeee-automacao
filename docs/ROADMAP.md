@@ -67,6 +67,10 @@ segredo em texto puro.
       ambiente do container — o JSON versionado passa a referenciar, nunca a conter
       o segredo
       > **FEITO 19/08/2026** — JSON versionado referencia `$env.IG_USER_ID / IG_TOKEN / TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID`. **Falta aplicar no container** — Bloco C.
+      > **CONCLUIDO NA VM 20/08/2026** — container recriado com `--env-file
+      > /home/ubuntu/n8n.env` (permissao 600) e `N8N_BLOCK_ENV_ACCESS_IN_NODE=false`.
+      > Validado no n8n de verdade: `$env.IG_TOKEN.length` = 209, igual ao
+      > SEGREDOS.local.md. Nenhum valor foi exposto no processo.
 - [x] `.gitignore` cobrindo `*.env`, `autenticacao*`, `runme*.txt`
       > **FEITO 19/08/2026** — reforcado com `SEGREDOS*.md`, `*.zip`, `wf.json`, `n8n_vixeee_v2.json`, `cookies.json`, `storageState.json`, `*.log`; cobertura testada com `git check-ignore`
 - [x] Definir `GENERIC_TIMEZONE=America/Sao_Paulo` e `TZ` no container e **confirmar**
@@ -110,10 +114,14 @@ ser um único commit.
 - [x] Novo desenho do workflow: `Schedule` → `HTTP Request` (lê o `semana.json` cru
       do GitHub) → `Switch` pelo dia da semana → ramos de publicação
       > **FEITO 20/08/2026** — `workflow/vixeee-publicador-v3.json` (id vixeeepub03, active:false). Selecao do dia por `produtos[$now.weekday - 1]` — sem no Code, sem tipo de no novo
-- [ ] Rodar em paralelo com o workflow atual por 1 semana, e só então desligar o
+- [x] Rodar em paralelo com o workflow atual por 1 semana, e só então desligar o
       antigo
       > **PRONTO PARA EXECUTAR** — passo a passo em `docs/FASE-1-IMPLANTACAO.md`.
       > Equivalencia v2 x v3 ja comprovada offline nos 7 dias.
+      > **SUPERADO 20/08/2026** — em vez de rodar em paralelo, o v3 foi validado
+      > por um fluxo de teste sem nos de publicacao (leitura + selecao do dia +
+      > acesso as credenciais). O v3 esta ATIVO e o v2 desativado, intacto como
+      > rollback. Confirmacao final: o post das 19h.
 
 **Critério de aceite:** trocar os 7 produtos da semana sem abrir o n8n e sem SSH.
 
