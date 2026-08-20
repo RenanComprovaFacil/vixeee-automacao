@@ -65,8 +65,13 @@ segredo em texto puro.
       > **FEITO 19/08/2026** — JSON versionado referencia `$env.IG_USER_ID / IG_TOKEN / TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID`. **Falta aplicar no container** — Bloco C.
 - [x] `.gitignore` cobrindo `*.env`, `autenticacao*`, `runme*.txt`
       > **FEITO 19/08/2026** — reforcado com `SEGREDOS*.md`, `*.zip`, `wf.json`, `n8n_vixeee_v2.json`, `cookies.json`, `storageState.json`, `*.log`; cobertura testada com `git check-ignore`
-- [ ] Definir `GENERIC_TIMEZONE=America/Sao_Paulo` e `TZ` no container e **confirmar**
+- [x] Definir `GENERIC_TIMEZONE=America/Sao_Paulo` e `TZ` no container e **confirmar**
       se "19h" está saindo às 19h de Brasília (pendência aberta desde o início)
+      > **RESOLVIDO 20/08/2026 (Bloco B)** — `GENERIC_TIMEZONE=America/Sao_Paulo`
+      > ja estava definida no container: os gatilhos sempre dispararam as 19h de
+      > Brasilia. Falso alarme. `TZ` segue indefinida (afeta so log/formatacao,
+      > nao o agendamento) — acrescentar `-e TZ=America/Sao_Paulo` na proxima
+      > recriacao e cosmetico. Ver `docs/INFRA.md`.
 - [ ] **Mitigar o risco de reclaim por ociosidade** da Oracle: cron leve na VM que
       mantenha CPU/rede acima de 20% do percentil 95 (janela de 7 dias), ou aceitar o
       risco de forma consciente e documentada
