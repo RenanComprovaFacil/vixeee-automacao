@@ -15,7 +15,9 @@ USO
     python site/gen_site.py            # gera ./index.html
     python site/gen_site.py --saida /tmp/preview.html
 
-Publicacao: GitHub Pages servindo a raiz do repositorio.
+Publicacao: Cloudflare Pages servindo a pasta publico/.
+A pasta leva o index.html, as 14 artes e uma copia do semana.json — assim tudo
+que precisa ser publico sai do dominio proprio, e o repositorio pode ser privado.
 """
 import argparse
 import html
@@ -243,7 +245,7 @@ def gerar(dados):
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--saida", default="index.html")
+    ap.add_argument("--saida", default="publico/index.html")
     args = ap.parse_args()
 
     dados = json.loads((RAIZ / "dados" / "semana.json").read_text(encoding="utf-8"))
@@ -251,12 +253,21 @@ def main():
     if not destino.is_absolute():
         destino = RAIZ / destino
 
+    destino.parent.mkdir(parents=True, exist_ok=True)
     destino.write_text(gerar(dados), encoding="utf-8")
+
+    # O semana.json vai junto para o site: assim o n8n le do proprio dominio
+    # publico, e nao do raw.githubusercontent. E o que permite o repositorio
+    # ser privado.
+    copia = destino.parent / "dados" / "semana.json"
+    copia.parent.mkdir(parents=True, exist_ok=True)
+    copia.write_text(json.dumps(dados, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     n = len(dados["produtos"])
     kb = destino.stat().st_size / 1024
     print(f"[ok] {destino.name} gerado — {n} produtos, {kb:.1f} KB, HTML estatico")
     print(f"     imagens: foto da Shopee, com a arte diaN_post.jpg como fallback")
+    print(f"     + dados/semana.json copiado para o site")
 
 
 if __name__ == "__main__":

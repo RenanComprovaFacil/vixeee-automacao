@@ -66,10 +66,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet index.html; then
-            echo "index.html sem alteracao — nada a commitar"
+          if git diff --quiet publico/; then
+            echo "pagina sem alteracao — nada a commitar"
           else
-            git add index.html
+            git add publico/
             git commit -m "chore(site): regenera a pagina de bio [skip ci]"
             git push
             echo "pagina atualizada"
