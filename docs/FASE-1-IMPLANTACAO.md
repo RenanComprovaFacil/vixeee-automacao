@@ -235,3 +235,67 @@ O `?cb={{$now.toMillis()}}` na URL quebra o cache do `raw.githubusercontent`
   por expressão. Renomear as artes quebra o fluxo.
 - **Publica no dia, não no produto:** se você quiser antecipar um produto, precisa
   reordenar o `semana.json` — não há como forçar um dia específico pelo webhook.
+
+---
+
+# ✅ IMPLANTADO — 20/08/2026
+
+## Publicação de teste: SUCESSO
+
+Disparada às 11:37 BRT via `POST /webhook/vixeee-publicar-v3`. Execução 24,
+status `success`, duração 74 s (coerente com as duas esperas de 30 s).
+
+Os 11 nós executaram sem erro:
+
+```
+[OK] Webhook Teste        [OK] Telegram sendPhoto
+[OK] Buscar semana        [OK] IG feed container → Espera feed → IG feed publicar
+[OK] Produto de hoje      [OK] IG story container → Espera story → IG story publicar
+[OK] Config
+```
+
+Conteúdo publicado: quinta = dia 4 = **Bomba de Ar Portátil 4x1, R$ 69,99 (-65%)**.
+
+## Pré-voo executado antes do disparo
+
+| Recurso | Status |
+|---|---|
+| `dia4_post.jpg` no `vixeee-artes` | 200 OK |
+| `dia4_story.jpg` no `vixeee-artes` | 200 OK |
+| Imagem crua da Shopee (Telegram) | 200 OK |
+
+Vale repetir esse pré-voo sempre que trocar a semana — arte faltando é a falha
+mais provável, e o fluxo não avisa (ver *Limitações conhecidas*).
+
+## Estado deixado na VM
+
+O v3 foi **desativado logo após o teste**, para o agendamento das 19h não publicar
+o mesmo produto de novo no mesmo dia.
+
+> ⚠️ `update:workflow --active=false` **só vale depois de `docker restart`**. Sem o
+> restart, a instância em memória continua com o agendamento carregado e publica
+> assim mesmo. Confirmar sempre com:
+> `sudo docker logs --since 100s n8n | grep -c "Activated workflow"`
+
+**Religamento automático agendado** — não depende de ninguém lembrar:
+
+- `~/religar_v3.sh` (one-shot: reativa, reinicia e se remove do cron)
+- `crontab`: `0 11 21 8 * /home/ubuntu/religar_v3.sh` → 21/08 às 08:00 BRT
+- Validado: sintaxe OK, `sudo` sem senha OK, serviço `cron` ativo, caminhos absolutos
+- Log em `~/religar_v3.log`
+
+**Se o cron falhar**, o comando manual é:
+
+```bash
+sudo docker exec n8n n8n update:workflow --id=vixeeepub03 --active=true && sudo docker restart n8n
+```
+
+Confirmar depois com `sudo docker logs --since 100s n8n | grep "Activated workflow"`.
+
+## Rollback (v2 continua intacto)
+
+```bash
+sudo docker exec n8n n8n update:workflow --id=vixeeepub01 --active=true
+sudo docker exec n8n n8n update:workflow --id=vixeeepub03 --active=false
+sudo docker restart n8n
+```
