@@ -1,7 +1,7 @@
 {
   "semana": "2026-W34",
   "gerado_em": "2026-08-20T08:58:07-03:00",
-  "_nota": "EXEMPLO/TEMPLATE. Os campos com null vêm do produtos_semana1.json (PC do Renan) — ver docs/IMPORTAR-ARQUIVOS-EXISTENTES.md. Os affiliate_link e a ordem dos 7 dias são os reais da Semana 1.",
+  "_nota": "Semana 1, dados reais. `preco_original` e DERIVADO de preco/desconto (nao existia na origem) — conferido contra as artes publicadas, bate nos 7. `shop_id`, `avaliacao` e `video_url` seguem null: chegam na Fase 2, com o extrator Shopee. INVARIANTE: `produtos` deve ficar ordenado por dia, 1 a 7 — o workflow seleciona por indice.",
   "produtos": [
     {
       "dia": 1,

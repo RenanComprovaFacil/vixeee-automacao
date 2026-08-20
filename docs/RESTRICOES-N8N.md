@@ -29,3 +29,57 @@
   - IG feed container → Espera 30s → IG feed publicar (com retry).
   - IG story container (`media_type=STORIES`) → Espera 30s → IG story publicar (com retry).
 - **Alvo da Fase 1:** substituir os 7 nós Set estáticos por leitura de `dados/semana.json`.
+
+---
+
+## Restrições descobertas em 20/08/2026 (n8n **2.34.5**, testado na VM)
+
+Todas verificadas executando de verdade, num workflow descartável sem nós de
+publicação — nenhum post foi disparado para descobrir isto.
+
+9. **`$env` está BLOQUEADO nos nós.** Expressão `{{$env.QUALQUER_COISA}}` falha com:
+
+   ```
+   NodeOperationError: access to env vars denied
+   "...contact the administrator to remove the environment variable
+    N8N_BLOCK_ENV_ACCESS_IN_NODE"
+   ```
+
+   No n8n 2.x isso passou a ser o **padrão**. Para liberar, é preciso recriar o
+   container com `-e N8N_BLOCK_ENV_ACCESS_IN_NODE=false`.
+
+10. **`raw.githubusercontent.com` serve `.json` como `text/plain; charset=utf-8`.**
+    Sem forçar o formato, o nó HTTP Request entrega o corpo como **string** e
+    `$json.produtos` vira `undefined` — o fluxo publica campos vazios **em
+    silêncio**. Obrigatório no nó:
+
+    ```json
+    "options": { "response": { "response": { "responseFormat": "json" } } }
+    ```
+
+11. **O n8n 2.x versiona workflows.** `import:workflow` cria uma versão nova com
+    `activeVersionId = null`, mesmo que o workflow estivesse ativo. Sintoma:
+
+    ```
+    404 — Active version not found for workflow with id "..."
+    ```
+
+    A sequência correta de deploy é sempre:
+
+    ```
+    import:workflow  →  update:workflow --active=true  →  docker restart  →  esperar
+    ```
+
+12. **Não existe `delete:workflow` na CLI** (`Command "delete:workflow" not found`).
+    Para remover um workflow, use a interface. Desativar pela CLI funciona.
+
+13. **`n8n execute --id=...` não funciona** com a instância principal rodando:
+    *"n8n Task Broker's port 5679 is already in use"*. É a mesma trava do item 1.
+    Para testar um fluxo sem a interface, use um **Webhook com
+    `responseMode: "lastNode"`** — a resposta HTTP traz a saída do último nó.
+
+14. **Esperar o boot direito.** `GET /healthz` responde em ~35 s, mas o banco ainda
+    não está pronto (`503 Database is not ready!`), e as rotas de webhook só são
+    registradas depois disso. **Não use `sleep` fixo nem aceite qualquer resposta
+    como "pronto"** — faça polling até receber um campo que o próprio fluxo produz.
+    Boot completo observado: **~90 s**.

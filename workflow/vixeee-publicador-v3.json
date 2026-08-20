@@ -42,7 +42,13 @@
     {
       "parameters": {
         "url": "=https://raw.githubusercontent.com/RenanComprovaFacil/vixeee-automacao/main/dados/semana.json?cb={{$now.toMillis()}}",
-        "options": {}
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
       },
       "id": "buscar-semana",
       "name": "Buscar semana",

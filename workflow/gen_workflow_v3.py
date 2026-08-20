@@ -177,7 +177,11 @@ def construir(wf_id: str, modo_cred: str) -> dict:
     nos.append({
         "parameters": {
             "url": f"={URL_SEMANA}?cb={{{{$now.toMillis()}}}}",
-            "options": {},
+            # OBRIGATORIO: o raw.githubusercontent serve .json como
+            # "text/plain; charset=utf-8". Sem forcar o formato, o n8n entrega
+            # o corpo como STRING e `$json.produtos` vira undefined -> o fluxo
+            # publica campos vazios, em silencio. Descoberto em 20/08/2026.
+            "options": {"response": {"response": {"responseFormat": "json"}}},
         },
         "id": "buscar-semana", "name": "Buscar semana",
         "type": "n8n-nodes-base.httpRequest",
