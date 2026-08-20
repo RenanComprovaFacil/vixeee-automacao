@@ -1,22 +1,29 @@
-# workflow/ — o n8n versionado
+# workflow/ — o fluxo n8n versionado
 
-O workflow em PRODUCAO ("Vixeee Que Barato — Publicador", id `vixeeepub01`)
-ainda vive DENTRO do container Docker na VM Oracle e NAO esta' neste repo.
-Coloca-lo aqui, SEM segredos, e' entrega da Fase 0.
+## Arquivos
 
-## Como versionar (Fase 0)
-1. Exportar da VM (via SSH):
-   ```
-   docker exec n8n n8n export:workflow --id=vixeeepub01 --output=/tmp/wf.json
-   docker cp n8n:/tmp/wf.json ./vixeee-publicador.json
-   ```
-2. REMOVER os segredos: o no' `Config` carrega `igToken`, `tgToken`, etc. em
-   texto puro. Migrar para Credentials do n8n ou variaveis de ambiente e deixar
-   o JSON apenas REFERENCIANDO — nunca contendo — os valores.
-3. So' entao commitar `vixeee-publicador.json`.
+| Arquivo | O que é |
+|---|---|
+| `vixeee-publicador.json` | **v2 — o que está em produção** (`vixeeepub01`, 23 nós). Cópia fiel do que roda na VM, comparada em 20/08/2026. Dados dos produtos embutidos em 7 nós `Set`. |
+| `gen_workflow.py` | Gerador do v2. Mantido como referência histórica. |
+| `vixeee-publicador-v3.json` | **v3 — Fase 1** (`vixeeepub03`, 12 nós). Lê `dados/semana.json` do GitHub. Ainda não promovido. |
+| `gen_workflow_v3.py` | Gerador do v3. Valida o `semana.json` antes de emitir. |
+| `testar_equivalencia_v3.py` | Prova que v3 e v2 publicam o mesmo conteúdo nos 7 dias. |
 
-## gen_workflow.py
-Gerador que monta o JSON do workflow a partir dos dados. A versao atual esta'
-no `backup_tecnico_vixeee.zip` no PC do Renan (ver
-`docs/IMPORTAR-ARQUIVOS-EXISTENTES.md`). A meta da Fase 1 e' reescreve-lo para
-LER `dados/semana.json` em vez de embutir os dados.
+## Regra sobre credenciais
+
+Os arquivos versionados **nunca** contêm token. O nó `Config` referencia
+`$env.IG_USER_ID`, `$env.IG_TOKEN`, `$env.TELEGRAM_BOT_TOKEN` e
+`$env.TELEGRAM_CHAT_ID`.
+
+Para gerar uma versão com os valores embutidos (necessária enquanto o container
+não tiver as variáveis de ambiente), use `--credenciais literal` e escreva o
+arquivo **fora do repositório**. Ver `docs/FASE-1-IMPLANTACAO.md`.
+
+## Antes de editar qualquer coisa
+
+Leia `docs/RESTRICOES-N8N.md`. Resumo do que quebra este n8n: nó Code, expressões
+com array-literal ou ternário aninhado, e `jsonBody` + `JSON.stringify`.
+
+Os nomes `Config`, `IG feed container` e `IG story container` são referenciados
+dentro de expressões de outros nós — renomear quebra o fluxo.

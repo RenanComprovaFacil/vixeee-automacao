@@ -101,14 +101,19 @@ projeto inteiro e reconstruir o workflow — e nenhum token aparece em `git log 
 ser um único commit.
 
 **Entregas**
-- [ ] Definir e congelar o schema do `semana.json` (produtos, dia da semana, preços,
+- [x] Definir e congelar o schema do `semana.json` (produtos, dia da semana, preços,
       desconto, comissão, `image_url`, `video_url`, `affiliate_link`, legendas)
-- [ ] Reescrever o `gen_workflow.py` para gerar um workflow que **lê os dados**, em
+      > **FEITO 20/08/2026** — schema em `dados/semana.schema.json`, com `additionalProperties:false`; `semana.json` preenchido e validando
+- [x] Reescrever o `gen_workflow.py` para gerar um workflow que **lê os dados**, em
       vez de embuti-los nos nós
-- [ ] Novo desenho do workflow: `Schedule` → `HTTP Request` (lê o `semana.json` cru
+      > **FEITO 20/08/2026** — `workflow/gen_workflow_v3.py` — gera 12 nos lendo o semana.json cru do GitHub; valida a ordenacao dos produtos antes de emitir
+- [x] Novo desenho do workflow: `Schedule` → `HTTP Request` (lê o `semana.json` cru
       do GitHub) → `Switch` pelo dia da semana → ramos de publicação
+      > **FEITO 20/08/2026** — `workflow/vixeee-publicador-v3.json` (id vixeeepub03, active:false). Selecao do dia por `produtos[$now.weekday - 1]` — sem no Code, sem tipo de no novo
 - [ ] Rodar em paralelo com o workflow atual por 1 semana, e só então desligar o
       antigo
+      > **PRONTO PARA EXECUTAR** — passo a passo em `docs/FASE-1-IMPLANTACAO.md`.
+      > Equivalencia v2 x v3 ja comprovada offline nos 7 dias.
 
 **Critério de aceite:** trocar os 7 produtos da semana sem abrir o n8n e sem SSH.
 

@@ -1,0 +1,465 @@
+{
+  "id": "vixeeepub03",
+  "name": "Vixeee Que Barato — Publicador v3 (orientado a dados)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 19 * * *"
+            }
+          ]
+        }
+      },
+      "id": "agenda",
+      "name": "Agenda 19h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vixeee-publicar-v3",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-teste",
+      "name": "Webhook Teste",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        500
+      ],
+      "webhookId": "vixeee-publicar-v3"
+    },
+    {
+      "parameters": {
+        "url": "=https://raw.githubusercontent.com/RenanComprovaFacil/vixeee-automacao/main/dados/semana.json?cb={{$now.toMillis()}}",
+        "options": {}
+      },
+      "id": "buscar-semana",
+      "name": "Buscar semana",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        430,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "p1",
+              "name": "dia",
+              "value": "={{$json.produtos[$now.weekday - 1].dia}}",
+              "type": "number"
+            },
+            {
+              "id": "p2",
+              "name": "nome",
+              "value": "={{$json.produtos[$now.weekday - 1].nome}}",
+              "type": "string"
+            },
+            {
+              "id": "p3",
+              "name": "image_url",
+              "value": "={{$json.produtos[$now.weekday - 1].image_url}}",
+              "type": "string"
+            },
+            {
+              "id": "p4",
+              "name": "legenda_tg",
+              "value": "={{$json.produtos[$now.weekday - 1].legenda_tg}}",
+              "type": "string"
+            },
+            {
+              "id": "p5",
+              "name": "legenda_ig",
+              "value": "={{$json.produtos[$now.weekday - 1].legenda_ig}}",
+              "type": "string"
+            },
+            {
+              "id": "p6",
+              "name": "image_url_ig_post",
+              "value": "=https://raw.githubusercontent.com/RenanComprovaFacil/vixeee-artes/main/dia{{$now.weekday}}_post.jpg",
+              "type": "string"
+            },
+            {
+              "id": "p7",
+              "name": "image_url_ig_story",
+              "value": "=https://raw.githubusercontent.com/RenanComprovaFacil/vixeee-artes/main/dia{{$now.weekday}}_story.jpg",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "produto-hoje",
+      "name": "Produto de hoje",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c1",
+              "name": "igUserId",
+              "value": "={{$env.IG_USER_ID}}",
+              "type": "string"
+            },
+            {
+              "id": "c2",
+              "name": "igToken",
+              "value": "={{$env.IG_TOKEN}}",
+              "type": "string"
+            },
+            {
+              "id": "c3",
+              "name": "tgToken",
+              "value": "={{$env.TELEGRAM_BOT_TOKEN}}",
+              "type": "string"
+            },
+            {
+              "id": "c4",
+              "name": "chatId",
+              "value": "={{$env.TELEGRAM_CHAT_ID}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "config",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        890,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{$json.tgToken}}/sendPhoto",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{$json.chatId}}"
+            },
+            {
+              "name": "photo",
+              "value": "={{$json.image_url}}"
+            },
+            {
+              "name": "caption",
+              "value": "={{$json.legenda_tg}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "telegram-sendphoto",
+      "name": "Telegram sendPhoto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{$json.igUserId}}/media",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{$json.image_url_ig_post}}"
+            },
+            {
+              "name": "caption",
+              "value": "={{$json.legenda_ig}}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{$json.igToken}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ig-feed-container",
+      "name": "IG feed container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 30,
+        "unit": "seconds"
+      },
+      "id": "espera-feed",
+      "name": "Espera feed",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1370,
+        400
+      ],
+      "webhookId": "espera-feed"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{$('Config').item.json.igUserId}}/media_publish",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{$('IG feed container').item.json.id}}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{$('Config').item.json.igToken}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ig-feed-publicar",
+      "name": "IG feed publicar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        400
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 20000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{$json.igUserId}}/media",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{$json.image_url_ig_story}}"
+            },
+            {
+              "name": "media_type",
+              "value": "STORIES"
+            },
+            {
+              "name": "access_token",
+              "value": "={{$json.igToken}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ig-story-container",
+      "name": "IG story container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 30,
+        "unit": "seconds"
+      },
+      "id": "espera-story",
+      "name": "Espera story",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1370,
+        620
+      ],
+      "webhookId": "espera-story"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{$('Config').item.json.igUserId}}/media_publish",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{$('IG story container').item.json.id}}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{$('Config').item.json.igToken}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ig-story-publicar",
+      "name": "IG story publicar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        620
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 20000
+    }
+  ],
+  "connections": {
+    "Agenda 19h": {
+      "main": [
+        [
+          {
+            "node": "Buscar semana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Teste": {
+      "main": [
+        [
+          {
+            "node": "Buscar semana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar semana": {
+      "main": [
+        [
+          {
+            "node": "Produto de hoje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produto de hoje": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Telegram sendPhoto",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IG feed container",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IG story container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IG feed container": {
+      "main": [
+        [
+          {
+            "node": "Espera feed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Espera feed": {
+      "main": [
+        [
+          {
+            "node": "IG feed publicar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IG story container": {
+      "main": [
+        [
+          {
+            "node": "Espera story",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Espera story": {
+      "main": [
+        [
+          {
+            "node": "IG story publicar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": []
+}
