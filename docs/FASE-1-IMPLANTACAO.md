@@ -93,7 +93,11 @@ chmod 600 ~/n8n.env
 
 ```bash
 sudo docker stop n8n && sudo docker rm n8n
-sudo docker run -d --name n8n --restart unless-stopped   -p 127.0.0.1:5678:5678   -v /home/ubuntu/n8n/data:/home/node/.n8n   --env-file /home/ubuntu/n8n.env   docker.n8n.io/n8nio/n8n
+sudo docker run -d --name n8n --restart unless-stopped \
+  -p 127.0.0.1:5678:5678 \
+  -v /home/ubuntu/n8n/data:/home/node/.n8n \
+  --env-file /home/ubuntu/n8n.env \
+  docker.n8n.io/n8nio/n8n
 ```
 
 > Este comando já traz duas melhorias além das credenciais: `127.0.0.1` fecha a
@@ -122,13 +126,16 @@ sudo docker exec n8n n8n --version
 
 Anote o resultado. Se der algum problema no import, é a primeira informação útil.
 
-### 2. Gerar e enviar o arquivo
+### 2. Enviar o arquivo do workflow
 
-No PC, gere em modo `literal` (comando acima), e envie para a VM:
+Seguindo o **caminho A**, o arquivo é o versionado — não tem segredo nenhum:
 
 ```powershell
-scp -i "$env:USERPROFILE\.ssh\id_ed25519" /tmp/v3-literal.json ubuntu@<IP>:~/v3.json
+scp -i "$env:USERPROFILE\.ssh\id_ed25519" workflow\vixeee-publicador-v3.json ubuntu@<IP>:~/v3.json
 ```
+
+*(Se optar pelo caminho B, gere antes com `--credenciais literal` para um destino
+fora do repositório e envie esse arquivo no lugar.)*
 
 ### 3. Importar — sem ativar
 
@@ -163,21 +170,28 @@ Depois, em `http://localhost:5678`, abra o workflow v3 e:
 2. **Execute step** no nó `Produto de hoje` → confira se o produto é o do dia certo
    e se as duas URLs de arte apontam para `diaN_post.jpg` / `diaN_story.jpg`.
 3. **Execute step** no nó `Config` → os 4 campos precisam vir **preenchidos**.
-   Se vierem vazios no modo `env`, esta instância bloqueia `$env` → use o modo
-   `literal` ou crie Credentials na interface.
+   Se der `access to env vars denied`, o passo A2 não foi feito (ou o
+   `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` não entrou no `~/n8n.env`).
 
 Pare aí. Não execute os nós de publicação.
 
-### 5. Virar a chave (janela após 19h30)
+### 5. Virar a chave (fora da janela do post das 19h)
 
 ```bash
 sudo docker exec n8n n8n update:workflow --id=vixeeepub03 --active=true
 sudo docker exec n8n n8n update:workflow --id=vixeeepub01 --active=false
 sudo docker restart n8n
-sleep 110
 ```
 
-> O boot leva ~90–100 s nesta VM (`docs/RESTRICOES-N8N.md`, item 4).
+Espere o boot completo (~90 s) e confirme que voltou ativo:
+
+```bash
+sudo docker logs --since 3m n8n 2>&1 | grep "Activated workflow"
+```
+
+> ⚠️ Não use `sleep` fixo para saber se subiu: o `/healthz` responde em ~35 s, mas o
+> banco ainda devolve `503` e as rotas de webhook só registram depois
+> (`docs/RESTRICOES-N8N.md`, item 14).
 
 ### 6. Confirmar no dia seguinte
 
