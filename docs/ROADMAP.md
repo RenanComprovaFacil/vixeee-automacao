@@ -47,18 +47,24 @@ SSH" em "um commit", e é pré-requisito de tudo o que vem depois.
 segredo em texto puro.
 
 **Entregas**
-- [ ] Criar o repositório `vixeee-automacao` com a estrutura de pastas proposta
+- [x] Criar o repositório `vixeee-automacao` com a estrutura de pastas proposta
       (`.github/workflows/`, `captura/`, `dados/`, `midia/`, `workflow/`, `docs/`)
-- [ ] Exportar o workflow `vixeeepub01` do container e commitar como
+      > **FEITO 19/08/2026** — repo criado, `git init` e publicado em github.com/RenanComprovaFacil/vixeee-automacao (32 arquivos, 0 segredos)
+- [x] Exportar o workflow `vixeeepub01` do container e commitar como
       `workflow/vixeee-publicador.json`
-- [ ] Commitar `gen_workflow.py`, `produtos_semana1.json` e os MDs de contexto,
+      > **FEITO 19/08/2026** — `workflow/vixeee-publicador.json` — 23 nos, id `vixeeepub01`; no `Config` sanitizado para `$env.*`
+- [x] Commitar `gen_workflow.py`, `produtos_semana1.json` e os MDs de contexto,
       **renomeando** os arquivos cujos nomes estão trocados entre si
-- [ ] **Rotacionar todas as credenciais expostas:** Page Token do Instagram, App
+      > **FEITO 19/08/2026** — `gen_workflow.py` funcional (stub substituido), `produtos_semana1.json`, skill + scripts; `Repo exportado.md` -> `docs/HANDOFF-COWORK.md`
+- [~] **Rotacionar todas as credenciais expostas:** Page Token do Instagram, App
       Secret da Meta, bot token do Telegram
-- [ ] Migrar os segredos do nó `Config` para **Credentials do n8n** ou variáveis de
+      > **DISPENSADO pelo Renan em 19/08/2026** — decisao consciente do dono. Consequencia registrada: o repo e publico e os tokens expostos seguem validos, entao qualquer falha de sanitizacao vira credencial viva. Mitigacao adotada: portao de varredura (inclusive base64) obrigatorio antes de todo push.
+- [x] Migrar os segredos do nó `Config` para **Credentials do n8n** ou variáveis de
       ambiente do container — o JSON versionado passa a referenciar, nunca a conter
       o segredo
-- [ ] `.gitignore` cobrindo `*.env`, `autenticacao*`, `runme*.txt`
+      > **FEITO 19/08/2026** — JSON versionado referencia `$env.IG_USER_ID / IG_TOKEN / TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID`. **Falta aplicar no container** — Bloco C.
+- [x] `.gitignore` cobrindo `*.env`, `autenticacao*`, `runme*.txt`
+      > **FEITO 19/08/2026** — reforcado com `SEGREDOS*.md`, `*.zip`, `wf.json`, `n8n_vixeee_v2.json`, `cookies.json`, `storageState.json`, `*.log`; cobertura testada com `git check-ignore`
 - [ ] Definir `GENERIC_TIMEZONE=America/Sao_Paulo` e `TZ` no container e **confirmar**
       se "19h" está saindo às 19h de Brasília (pendência aberta desde o início)
 - [ ] **Mitigar o risco de reclaim por ociosidade** da Oracle: cron leve na VM que

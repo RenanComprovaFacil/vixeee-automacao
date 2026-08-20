@@ -5,7 +5,7 @@
 ## VM Oracle Cloud (Always Free)
 
 - Instância: `n8n-afiliados`
-- Shape: `VM.Standard.E2.1.Micro` (1 OCPU / 1 GB RAM)
+- Shape: `VM.Standard.E2.1.Micro` (**1/8 de OCPU** com burst / 1 GB RAM) — nao e 1 OCPU inteiro
 - Região: `sa-saopaulo-1`
 - IP público: `<ver SEGREDOS.local.md>` — é **EFÊMERO**: muda **somente** se a instância for **parada**. Um reboot mantém o mesmo IP.
 - Regra: **NÃO PARAR a instância.**
