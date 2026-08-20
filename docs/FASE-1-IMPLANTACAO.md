@@ -48,28 +48,67 @@ python workflow/testar_equivalencia_v3.py "<caminho do export do v2>"
 
 ## Decisão: como as credenciais entram
 
-O arquivo versionado (`workflow/vixeee-publicador-v3.json`) referencia
-`$env.IG_TOKEN` e companhia. Para isso funcionar, as variáveis precisam existir
-**dentro do container** — o que exige recriá-lo (Bloco C).
+> ⚠️ **REVISADO em 20/08/2026, depois de testar na VM.** A versão anterior deste
+> guia assumia que o workflow versionado poderia referenciar `$env.IG_TOKEN`.
+> **Isso não funciona nesta instância** — ver `docs/RESTRICOES-N8N.md`, item 9:
+>
+> ```
+> NodeOperationError: access to env vars denied
+> ```
+>
+> No n8n 2.x, `N8N_BLOCK_ENV_ACCESS_IN_NODE` vem ligado por padrão.
 
-**Mas dá para implantar a Fase 1 sem esperar o Bloco C.** Gere uma versão com os
-valores embutidos, localmente, e importe essa:
+Restam três caminhos:
+
+| Caminho | Token fica no workflow? | Custo |
+|---|---|---|
+| **A. Liberar `$env` no container** | ❌ não | recriar o container (1 comando) |
+| **B. `--credenciais literal`** | ✅ sim (como hoje) | nenhum |
+| **C. Credentials nativas do n8n** | ❌ não | refatorar os 5 nós HTTP + cadastro manual na UI |
+
+**Recomendado: A.** É o único que cumpre o objetivo original da Fase 0 — tirar o
+token de dentro do workflow — sem refatorar o fluxo. E o container já foi
+reiniciado várias vezes hoje sem incidente, então a operação é conhecida.
+
+### Caminho A, passo a passo
+
+**A1. Você cria o arquivo de variáveis na VM** (é o único passo com credencial —
+os valores saem do seu `SEGREDOS.local.md`):
 
 ```bash
-export IG_USER_ID=...  IG_TOKEN=...  TELEGRAM_BOT_TOKEN=...
-python workflow/gen_workflow_v3.py --credenciais literal --saida /tmp/v3-literal.json
+cat > ~/n8n.env <<'FIM'
+IG_USER_ID=cole_aqui
+IG_TOKEN=cole_aqui
+TELEGRAM_BOT_TOKEN=cole_aqui
+TELEGRAM_CHAT_ID=@vixeeequebarato
+GENERIC_TIMEZONE=America/Sao_Paulo
+TZ=America/Sao_Paulo
+N8N_SECURE_COOKIE=false
+N8N_BLOCK_ENV_ACCESS_IN_NODE=false
+FIM
+chmod 600 ~/n8n.env
 ```
 
-> 🔴 O arquivo gerado nesse modo **contém as credenciais**. Gere fora do
-> repositório (ex.: `/tmp`), use, e apague. Nunca commite.
+**A2. Recriar o container lendo esse arquivo** (nenhum segredo aparece no comando):
 
-| Caminho | Quando usar |
-|---|---|
-| **literal** | agora — implanta a Fase 1 sem mexer no container |
-| **env** | depois do Bloco C, quando o container tiver as variáveis |
+```bash
+sudo docker stop n8n && sudo docker rm n8n
+sudo docker run -d --name n8n --restart unless-stopped   -p 127.0.0.1:5678:5678   -v /home/ubuntu/n8n/data:/home/node/.n8n   --env-file /home/ubuntu/n8n.env   docker.n8n.io/n8nio/n8n
+```
 
-Isso **desacopla a Fase 1 do Bloco C**: nenhuma recriação de container é necessária
-para colher o benefício.
+> Este comando já traz duas melhorias além das credenciais: `127.0.0.1` fecha a
+> porta para fora (hoje ela está publicada em `0.0.0.0` — ver `INFRA.md`) e o `TZ`
+> alinha o relógio do container com Brasília.
+>
+> ⚠️ O `-v` está com o caminho verificado por `docker inspect`. **Não altere** —
+> é ele que preserva o banco do n8n.
+
+**A3. Conferir que pegou:**
+
+```bash
+sudo docker exec n8n printenv | grep -c "IG_TOKEN\|TELEGRAM_BOT_TOKEN"   # espera 2
+sudo docker exec n8n date                                                # espera -03
+```
 
 ---
 
@@ -100,6 +139,12 @@ sudo docker exec n8n rm /home/node/v3.json
 ```
 
 O v3 nasce com `active: false`. **Nada muda no que está publicando.**
+
+> ⚠️ **n8n 2.x versiona workflows.** Todo `import:workflow` zera o
+> `activeVersionId` — reimportar um workflow ativo o derruba com
+> `404 Active version not found`. A sequência obrigatória é sempre:
+> **import → `update:workflow --active=true` → `docker restart` → esperar ~90 s.**
+> Ver `docs/RESTRICOES-N8N.md`, item 11.
 
 ### 4. Testar SEM publicar ⚠️
 
