@@ -1,0 +1,76 @@
+name: Regenerar pagina de bio
+
+# Roda quando o conteudo da semana muda. O objetivo e que "trocar a semana" seja
+# UM commit no dados/semana.json — sem ninguem precisar lembrar de rodar o
+# gerador na mao. O Actions regenera o index.html e o GitHub Pages publica.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dados/semana.json'
+      - 'site/gen_site.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validar o semana.json contra o schema
+        run: |
+          pip install --quiet jsonschema
+          python - <<'PY'
+          import json, jsonschema
+          d = json.load(open('dados/semana.json', encoding='utf-8'))
+          s = json.load(open('dados/semana.schema.json', encoding='utf-8'))
+          jsonschema.validate(d, s)
+          dias = [p['dia'] for p in d['produtos']]
+          assert dias == [1,2,3,4,5,6,7], f'produtos fora de ordem: {dias}'
+          print('semana.json valido —', len(d['produtos']), 'produtos')
+          PY
+
+      - name: Gerar a pagina
+        run: python site/gen_site.py
+
+      - name: Conferir que as artes e imagens respondem
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import json, urllib.request
+          d = json.load(open('dados/semana.json', encoding='utf-8'))
+          base = 'https://raw.githubusercontent.com/RenanComprovaFacil/vixeee-artes/main'
+          falhas = []
+          for p in d['produtos']:
+              alvos = [f"{base}/dia{p['dia']}_post.jpg", f"{base}/dia{p['dia']}_story.jpg"]
+              if p.get('image_url'):
+                  alvos.append(p['image_url'])
+              for u in alvos:
+                  try:
+                      req = urllib.request.Request(u, method='HEAD',
+                                                   headers={'User-Agent': 'Mozilla/5.0'})
+                      urllib.request.urlopen(req, timeout=15)
+                  except Exception as e:
+                      falhas.append(f"dia {p['dia']}: {u.split('/')[-1]} -> {e}")
+          print('\n'.join(falhas) if falhas else 'todas as midias respondem OK')
+          PY
+
+      - name: Commitar se mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet index.html; then
+            echo "index.html sem alteracao — nada a commitar"
+          else
+            git add index.html
+            git commit -m "chore(site): regenera a pagina de bio [skip ci]"
+            git push
+            echo "pagina atualizada"
+          fi

@@ -299,3 +299,71 @@ sudo docker exec n8n n8n update:workflow --id=vixeeepub01 --active=true
 sudo docker exec n8n n8n update:workflow --id=vixeeepub03 --active=false
 sudo docker restart n8n
 ```
+
+---
+
+# Página de bio (link-in-bio) — 20/08/2026
+
+🔗 **https://renancomprovafacil.github.io/vixeee-automacao/**
+
+## Por que existe
+
+O funil era **Instagram → bio → Telegram → Shopee** (3 passos). Cada passo perde
+gente. Agora é **Instagram → página → Shopee** (2 passos), com o Telegram no
+rodapé como canal próprio — continua no funil, mas deixa de ser pedágio.
+
+Isso também contorna o limite real do Stories: a Graph API **não publica sticker
+de link** (só a mídia). O link clicável tem que vir da bio, ou do sticker colocado
+à mão no app.
+
+## Como funciona
+
+`site/gen_site.py` lê o `dados/semana.json` e gera um `index.html` **estático** —
+o HTML já sai com os 7 produtos escritos dentro. Carrega instantâneo no navegador
+embutido do Instagram e funciona com JavaScript desligado.
+
+O único JS destaca o produto do dia e o move para o topo. Cosmético: sem ele a
+página segue correta, só sem o destaque.
+
+**Um commit no `semana.json` atualiza os posts do n8n E a página**, porque os dois
+leem a mesma fonte. O workflow `.github/workflows/build-site.yml` regenera o HTML
+automaticamente no push — ninguém precisa lembrar de rodar o gerador.
+
+## Decisões de design (medidas, não achismo)
+
+| | Primeira versão | Publicado |
+|---|---|---|
+| Altura no celular | 4.594 px | **1.848 px** |
+| Telas de rolagem | 5,6 | **2,3** |
+| Produtos na 1ª tela | 1 | **3** |
+
+Grade de 2 colunas já no celular — é como o próprio Shopee mostra, e permite
+comparar em vez de rolar. O produto do dia ocupa a linha inteira, com imagem ao
+lado do texto: cria hierarquia em vez de tratar os 7 como iguais.
+
+Verificado no viewport 375×812: imagens 7/7, sem estouro horizontal, Poppins
+carregada, botões com 45 px de altura (mínimo recomendado: 44).
+
+## Imagens
+
+Foto crua da Shopee, com a arte `diaN_post.jpg` como fallback via `onerror`.
+A CDN da Shopee **aceita hotlink** — testado no navegador, 7/7 carregam.
+
+> Nota para quem for medir isso de novo: as imagens usam `loading="lazy"`, então
+> num navegador headless que não renderiza elas **nunca são buscadas** e parecem
+> quebradas. Force `loading='eager'` antes de concluir que há falha.
+
+## Boas práticas incluídas
+
+- `rel="noopener sponsored"` nos links de afiliado
+- Aviso visível de que os links são de afiliado
+- Data de coleta dos preços (a Shopee altera a qualquer momento)
+- Tags OpenGraph para quando o link for compartilhado
+
+## Pendente
+
+- **Medição de cliques** (Fase 5): hoje a página manda direto para a Shopee, sem
+  registrar. Com o short link próprio, cada clique passa a ser contado por produto
+  e por canal.
+- **Domínio próprio**: a URL do GitHub Pages funciona, mas um domínio curto fica
+  melhor na bio.
