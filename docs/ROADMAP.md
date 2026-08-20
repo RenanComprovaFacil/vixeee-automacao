@@ -4,12 +4,16 @@
 
 ## Decisões de abertura (responder antes de codar)
 
-- [ ] **Repositório público ou privado?** Público dá runner 4 vCPU/16 GB, minutos
+- [x] **Repositório público ou privado?** Público dá runner 4 vCPU/16 GB, minutos
       ilimitados de Actions e Releases públicos de graça; privado cai pela metade
       (2 vCPU/8 GB, 2.000 min/mês) e Releases não ficam públicos, o que quebra o
       requisito de URL pública do Instagram. Recomendação do plano: **público**, com
       todo segredo em GitHub Secrets — implica que legendas, produtos e pipeline ficam
       visíveis; avaliar se isso incomoda.
+      > **DECIDIDO 19/08/2026: PUBLICO** — github.com/RenanComprovaFacil/vixeee-automacao
+      > Como os tokens expostos NAO foram rotacionados (decisao do dono), todo push
+      > passa antes por um portao de varredura de segredos, incluindo decodificacao
+      > de base64.
 - [ ] **Hospedagem do vídeo: GitHub Releases ou Cloudflare R2?** Releases evita cartão
       de crédito; R2 é mais robusto mas o domínio `r2.dev` é rate-limited/só-dev em
       produção (exige domínio custom) e provavelmente exige cartão no cadastro.
