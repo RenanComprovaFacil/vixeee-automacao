@@ -1,0 +1,64 @@
+# ==========================================================
+#  SEGREDOS — NUNCA versionar
+# ==========================================================
+SEGREDOS.local.md
+*.local.md
+.env
+.env.*
+!.env.example
+autenticacao*
+runme*.txt
+*.pem
+*_id_ed25519*
+id_ed25519*
+
+# ==========================================================
+#  Mídia / binários pesados (vão para a CDN, não pro Git)
+# ==========================================================
+midia/out/
+*.mp4
+*.mov
+*.webm
+tmp/
+
+# ==========================================================
+#  Python
+# ==========================================================
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ==========================================================
+#  Node
+# ==========================================================
+node_modules/
+npm-debug.log*
+
+# ==========================================================
+#  Sistema
+# ==========================================================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ==========================================================
+#  REFORCO Fase 0 — arquivos que carregam segredo em texto puro
+#  (repo e PUBLICO e os tokens NAO foram rotacionados)
+# ==========================================================
+*.env
+SEGREDOS*.md
+!SEGREDOS.local.md.example
+*.zip
+wf.json
+wf_live.json
+vixeee_wf.json
+n8n_vixeee_v2.json
+autenticacao*
+AUTENTICACAO*
+retomar-n8n*
+infra-acesso*
+cookies.json
+storageState.json
+*.log

@@ -1,0 +1,25 @@
+# STUB / Fase 3 — dispara quando dados/semana.json muda.
+# Instala ffmpeg (NAO vem pronto), gera a midia e publica na CDN + semana.lock.json.
+name: build-midia
+on:
+  push:
+    paths:
+      - "dados/semana.json"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest   # hoje = Ubuntu 24.04, 4 vCPU/16 GB em repo publico
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar ffmpeg (obrigatorio — nao vem pre-instalado)
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Gerar midia (TODO Fase 3)
+        run: |
+          echo "TODO: iterar dados/semana.json, baixar video_url, rodar midia/build.sh"
+          echo "TODO: validar specs (secao 1.7 do plano) antes de publicar"
+
+      # - name: Publicar na CDN (GitHub Releases ou R2) — TODO
+      # - name: Gravar dados/semana.lock.json com as URLs finais — TODO

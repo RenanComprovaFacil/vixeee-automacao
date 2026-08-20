@@ -1,0 +1,131 @@
+{
+  "fonte": "Shopee Afiliados - Oferta de produto",
+  "coletado_em": "2026-08-14",
+  "afiliado": "Renan Weslei",
+  "obs_link": "affiliate_link PENDENTE: gerar no painel via 'Obter Link em Massa' (precisa do navegador reconectado). Usar o item_id para localizar cada produto.",
+  "img_base": "https://down-bs-br.img.susercontent.com/",
+  "produtos": [
+    {
+      "dia": 1,
+      "item_id": "18699254225",
+      "nome": "Creatina Monohidratada Pura 300g Dark Lab - 100% Pura",
+      "preco": "R$39,90",
+      "desconto": "47%",
+      "vendas": "100mil+",
+      "comissao": "22%",
+      "categoria": "fitness",
+      "image_url": "https://down-bs-br.img.susercontent.com/br-11134207-7r98o-lzavjbelk90577.webp",
+      "affiliate_link": "https://s.shopee.com.br/1BLZIa17Jf"
+    },
+    {
+      "dia": 2,
+      "item_id": "23096321050",
+      "nome": "Papel Parede Mármore Dourado Para Cozinha Impermeável",
+      "preco": "R$15,99",
+      "desconto": "54%",
+      "vendas": "50mil+",
+      "comissao": "13%",
+      "categoria": "casa",
+      "image_url": "https://down-bs-br.img.susercontent.com/br-11134207-81zun-mkwbqms97saq80.webp",
+      "affiliate_link": "https://s.shopee.com.br/6pzw37yAsH"
+    },
+    {
+      "dia": 3,
+      "item_id": "58211909706",
+      "nome": "Mini Processador de Alimentos Elétrico Triturador 350ML",
+      "preco": "R$28,99",
+      "desconto": "52%",
+      "vendas": "1mil+",
+      "comissao": "13%",
+      "categoria": "cozinha",
+      "image_url": "https://down-bs-br.img.susercontent.com/sg-11134201-823ps-mp118z7cdqm84d.webp",
+      "affiliate_link": "https://s.shopee.com.br/8V8A291hge"
+    },
+    {
+      "dia": 4,
+      "item_id": "22794290449",
+      "nome": "Bomba de Ar Portatil Compressor 4 em 1 PowerBank Calibrador",
+      "preco": "R$69,99",
+      "desconto": "65%",
+      "vendas": "8mil+",
+      "comissao": "6%",
+      "categoria": "carro/gadget",
+      "image_url": "https://down-bs-br.img.susercontent.com/br-11134207-7r98o-md4vuscumrsi3e.webp",
+      "affiliate_link": "https://s.shopee.com.br/80BtREU8te"
+    },
+    {
+      "dia": 5,
+      "item_id": "22999163516",
+      "nome": "Kit Utensilios de Cozinha 19 Pecas Silicone com Cabo de Madeira",
+      "preco": "R$29,98",
+      "desconto": "55%",
+      "vendas": "3mil+",
+      "comissao": "13%",
+      "categoria": "cozinha",
+      "image_url": "https://down-bs-br.img.susercontent.com/br-11134207-81z1k-mgw8tsv5gveo65.webp",
+      "affiliate_link": "https://s.shopee.com.br/50YHrlnDfb"
+    },
+    {
+      "dia": 6,
+      "item_id": "52407426682",
+      "nome": "Tenis De Corrida Placa De Carbono Profissional Unissex 33-44",
+      "preco": "R$71,62",
+      "desconto": "53%",
+      "vendas": "7mil+",
+      "comissao": "14%",
+      "categoria": "esporte",
+      "image_url": "https://down-bs-br.img.susercontent.com/sg-11134201-8261o-mjyfg9rs969s85.webp",
+      "affiliate_link": "https://s.shopee.com.br/4fvRTAS9fq"
+    },
+    {
+      "dia": 7,
+      "item_id": "22192792890",
+      "nome": "Faca Para Churrasco Profissional Luxo Personalizado",
+      "preco": "R$57,00",
+      "desconto": "16%",
+      "vendas": "8mil+",
+      "comissao": "10%",
+      "categoria": "churrasco/presente",
+      "image_url": "https://down-bs-br.img.susercontent.com/br-11134207-81z1k-mfyfc5895i4l55.webp",
+      "affiliate_link": "https://s.shopee.com.br/BT26uRHaU"
+    }
+  ],
+  "telegram_extras_shopee": [
+    {
+      "item_id": "22894944958",
+      "nome": "Utensilios Silicone Cozinha 12 Pecas",
+      "preco": "R$19,90",
+      "desconto": "78%",
+      "comissao": "21%",
+      "image_url": "https://down-bs-br.img.susercontent.com/br-11134207-820me-mneaqb9op8n481.webp",
+      "affiliate_link": "https://s.shopee.com.br/5q7OrSfwG7"
+    },
+    {
+      "item_id": "20299032787",
+      "nome": "Tenis Esportivo Academia fittshoes",
+      "preco": "R$64,32",
+      "desconto": "28%",
+      "comissao": "19%",
+      "image_url": "https://down-bs-br.img.susercontent.com/br-11134207-81ztc-mj97qt8vbcoy58.webp",
+      "affiliate_link": "https://s.shopee.com.br/9V0hED5ZsB"
+    },
+    {
+      "item_id": "29535501772",
+      "nome": "40/46 Pecas Jogo De Chave Catraca Caixa De Ferramentas",
+      "preco": "R$29,90",
+      "desconto": "77%",
+      "comissao": "19%",
+      "image_url": "https://down-bs-br.img.susercontent.com/sg-11134201-7rfi6-m96pnweedbdz0a.webp",
+      "affiliate_link": "https://s.shopee.com.br/7AcmRvs7vF"
+    },
+    {
+      "item_id": "53750943172",
+      "nome": "Jogo De Panelas 10 Pecas Antiaderente tampa de vidro",
+      "preco": "R$199,99",
+      "desconto": "",
+      "comissao": "",
+      "image_url": "https://down-bs-br.img.susercontent.com/br-11134207-81z1k-mgqyauzfcc8wdf.webp",
+      "affiliate_link": "https://s.shopee.com.br/8Kojq5VTaf"
+    }
+  ]
+}

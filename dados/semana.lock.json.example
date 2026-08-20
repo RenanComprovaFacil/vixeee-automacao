@@ -1,0 +1,13 @@
+{
+  "_nota": "EXEMPLO do arquivo gerado pelo GitHub Actions (Fase 3). Carrega as URLs públicas FINAIS da mídia por dia, depois que a fábrica renderiza e publica na CDN. NÃO editar à mão — é saída automática.",
+  "semana": "2026-W34",
+  "gerado_em": "2026-08-19T19:05:00-03:00",
+  "midia": [
+    {
+      "dia": 1,
+      "reels_url": "https://github.com/RenanComprovaFacil/vixeee-automacao/releases/download/2026-W34/dia1_reels.mp4",
+      "story_url": "https://github.com/RenanComprovaFacil/vixeee-automacao/releases/download/2026-W34/dia1_story.mp4",
+      "telegram_url": "https://github.com/RenanComprovaFacil/vixeee-automacao/releases/download/2026-W34/dia1_tg.mp4"
+    }
+  ]
+}
