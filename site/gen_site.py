@@ -131,11 +131,17 @@ def gerar(dados):
   }}
   .tagline {{ margin: 14px auto 0; max-width: 34ch; font-size: 15px; line-height: 1.5; opacity: .78; }}
 
-  .cards {{ display: grid; gap: 16px; }}
-  @media (min-width: 560px) {{ .cards {{ grid-template-columns: 1fr 1fr; }} }}
+  /* Grade de 2 colunas ja no celular: da pra bater o olho em 4 produtos por tela,
+     que e como o proprio Shopee mostra. O produto do dia ocupa a linha inteira. */
+  .cards {{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }}
+  .card.hoje {{ grid-column: 1 / -1; }}
+  @media (min-width: 560px) {{
+    .cards {{ grid-template-columns: 1fr 1fr 1fr; gap: 16px; }}
+    .card.hoje {{ grid-column: 1 / -1; }}
+  }}
 
   .card {{
-    background: #fff; border-radius: 20px; overflow: hidden;
+    background: #fff; border-radius: 16px; overflow: hidden;
     box-shadow: 0 2px 14px rgba(43,43,43,.09);
     display: flex; flex-direction: column;
     transition: transform .15s ease, box-shadow .15s ease;
@@ -147,25 +153,37 @@ def gerar(dados):
   .thumb {{ position: relative; aspect-ratio: 1; background: #f4f4f6; }}
   .thumb img {{ width: 100%; height: 100%; object-fit: cover; display: block; }}
   .off {{
-    position: absolute; top: 10px; right: 10px; z-index: 2;
-    background: var(--coral); color: #fff; font-size: 13px; font-weight: 800;
-    padding: 6px 11px; border-radius: 999px; box-shadow: 0 3px 10px rgba(0,0,0,.16);
+    position: absolute; top: 8px; right: 8px; z-index: 2;
+    background: var(--coral); color: #fff; font-size: 11.5px; font-weight: 800;
+    padding: 5px 9px; border-radius: 999px; box-shadow: 0 3px 10px rgba(0,0,0,.16);
   }}
 
-  .info {{ padding: 14px 16px 16px; display: flex; flex-direction: column; flex: 1; }}
-  .quando {{ font-size: 11px; font-weight: 700; text-transform: uppercase;
-             letter-spacing: .6px; opacity: .5; }}
-  h2 {{ margin: 5px 0 0; font-size: 15px; font-weight: 600; line-height: 1.35; }}
-  .prova {{ margin: 7px 0 0; font-size: 12px; opacity: .62; }}
-  .preco {{ margin: 11px 0 14px; display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }}
-  .de {{ font-size: 13px; opacity: .45; text-decoration: line-through; }}
-  .preco strong {{ font-size: 23px; font-weight: 800; color: var(--rosa); }}
+  .info {{ padding: 11px 12px 12px; display: flex; flex-direction: column; flex: 1; }}
+  .quando {{ font-size: 10px; font-weight: 700; text-transform: uppercase;
+             letter-spacing: .5px; opacity: .5; }}
+  h2 {{
+    margin: 4px 0 0; font-size: 13px; font-weight: 600; line-height: 1.3;
+    /* 2 linhas no maximo: mantem todos os cards da fileira do mesmo tamanho */
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }}
+  .prova {{ margin: 6px 0 0; font-size: 11px; opacity: .62; }}
+  .preco {{ margin: 9px 0 11px; display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }}
+  .de {{ font-size: 12px; opacity: .45; text-decoration: line-through; }}
+  .preco strong {{ font-size: 19px; font-weight: 800; color: var(--rosa); }}
 
   .cta {{
     margin-top: auto; display: block; text-align: center; text-decoration: none;
     background: var(--amarelo); color: var(--grafite);
-    font-weight: 700; font-size: 15px; padding: 13px; border-radius: 13px;
+    font-weight: 700; font-size: 14px; padding: 12px 8px; border-radius: 12px;
   }}
+
+  /* O produto do dia ganha destaque: imagem lado a lado e tipografia maior */
+  .card.hoje {{ flex-direction: row; }}
+  .card.hoje .thumb {{ width: 42%; flex-shrink: 0; }}
+  .card.hoje .info {{ padding: 14px 16px; justify-content: center; }}
+  .card.hoje h2 {{ font-size: 15px; -webkit-line-clamp: 3; }}
+  .card.hoje .preco strong {{ font-size: 24px; }}
   .cta:active {{ transform: scale(.98); }}
 
   footer {{ margin-top: 34px; text-align: center; font-size: 13px; }}
